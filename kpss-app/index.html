@@ -42,6 +42,20 @@
             position: fixed; width: 100%;
         }
 
+        /* TOAST BİLDİRİMİ */
+        #toast-container {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            z-index: 99999; pointer-events: none;
+            display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 300px;
+        }
+        .toast {
+            background: rgba(34, 197, 94, 0.95); color: white; padding: 12px 20px;
+            border-radius: 8px; font-weight: 600; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0; transform: translateY(20px); transition: all 0.3s ease;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
         /* CROPPER MODAL */
         .cropper-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -62,6 +76,7 @@
             background: var(--bg-card); border-top: 1px solid var(--border);
             display: flex; justify-content: space-around; padding: 12px 5px;
             z-index: 1000; padding-bottom: max(12px, env(safe-area-inset-bottom));
+            overflow-x: auto;
         }
         .nav-btn { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; cursor: pointer; flex: 1; }
         .nav-btn i { font-size: 1.3rem; margin-bottom: 2px; }
@@ -90,7 +105,7 @@
         }
         #exam-selector option { background: #1e1e2e; color: #fff; }
 
-        /* GELİŞTİRİCİ KARTI (ESKİ HALİNE DÖNDÜ) */
+        /* GELİŞTİRİCİ KARTI */
         .dev-card {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(6, 182, 212, 0.1) 100%);
             border: 1px solid var(--primary);
@@ -135,27 +150,10 @@
         .topic-name { flex: 1; font-size: 0.9rem; }
         .section-title { font-size: 0.75rem; color: var(--warning); margin: 15px 0 5px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 5px; }
 
-        /* HAVUZ TAB */
+        /* HAVUZ */
         .tab-menu { display: flex; gap: 10px; margin-bottom: 15px; }
         .tab-item { flex: 1; padding: 10px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; cursor: pointer; text-align: center; }
         .tab-item.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* HAVUZ KARTLARI */
-        .q-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
-        .q-header { padding: 15px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .q-tag { font-size: 0.8rem; color: var(--secondary); font-weight: bold; }
-        .q-body { padding: 15px; }
-        .q-text { font-size: 1rem; margin-bottom: 15px; line-height: 1.5; }
-        .q-img-box { width: 100%; margin-bottom: 15px; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
-        .q-img-box img { width: 100%; display: block; }
-        
-        .q-answer-section { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border); display: none; animation: fadeIn 0.3s; }
-        .q-answer-section.visible { display: block; }
-        .q-answer-title { color: var(--success); font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; }
-        .cahil-msg { font-size: 0.8rem; color: var(--warning); font-style: italic; margin-bottom: 10px; }
-
-        .q-reveal-btn { width: 100%; padding: 12px; background: #333; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer; margin-top:10px;}
-        .q-reveal-btn:hover { background: #444; }
 
         /* RESİM ALANLARI */
         .upload-area { border: 2px dashed var(--border); padding: 20px; text-align: center; border-radius: 12px; margin-bottom: 15px; cursor: pointer; position: relative; }
@@ -169,11 +167,49 @@
         .opt-wide { width: auto; padding: 0 15px; border-radius: 20px; }
         .radio-label input { display: none; }
         .radio-label input:checked + .opt-btn { background: var(--success); border-color: var(--success); color: black; }
-        .opt-btn.correct { background: var(--success); border-color: var(--success); color: black; }
-        .opt-btn.wrong { background: var(--danger); border-color: var(--danger); color: white; }
+        
+        /* SORU LİSTE ÖĞESİ */
+        .q-list-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .q-list-item:active { background: rgba(255,255,255,0.08); }
+        .q-list-info b { color: var(--secondary); }
+        .q-list-arrow { color: var(--text-muted); font-size: 1.2rem; }
 
-        /* SİLME BUTONU */
-        .delete-btn { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+        /* SORU GÖRÜNTÜLEME (GEZGİN MODU) */
+        #question-viewer { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; 
+            z-index: 10001; display: none; flex-direction: column; 
+        }
+        .qv-header { padding: 15px; background: #1e1e2e; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .qv-close { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .qv-body { flex: 1; overflow-y: auto; padding: 20px; text-align: center; position: relative; }
+        
+        .qv-nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white;
+            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; backdrop-filter: blur(5px);
+        }
+        .qv-prev { left: 10px; }
+        .qv-next { right: 10px; }
+
+        .qv-content-box { max-width: 800px; margin: 0 auto; }
+        .qv-img { max-width: 100%; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
+        .qv-text { font-size: 1.1rem; margin-bottom: 20px; line-height: 1.6; }
+        .qv-answer-area { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #444; display: none; animation: fadeIn 0.3s; }
+        .qv-answer-area.show { display: block; }
+
+        /* GEÇMİŞ GRID */
+        .history-card { background: var(--bg-card); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .h-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+        .h-date { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; }
+        .h-title { font-weight: 700; color: #fff; font-size: 1rem; }
+        .h-total { font-size: 1.2rem; color: var(--success); font-weight: 800; background: rgba(34, 197, 94, 0.1); padding: 2px 8px; border-radius: 5px; }
+        .h-lessons-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .h-lesson-box { background: rgba(0,0,0,0.3); border-radius: 6px; padding: 6px 2px; display: flex; flex-direction: column; align-items: center; border-top: 3px solid #444; }
+        .hl-tr { border-color: #3b82f6; } .hl-mat { border-color: #ef4444; } .hl-tar { border-color: #f59e0b; } .hl-cog { border-color: #10b981; } .hl-vat { border-color: #8b5cf6; }
+        .hl-name { font-size: 0.7rem; font-weight: bold; color: #ccc; margin-bottom: 4px; text-transform: uppercase; }
+        .hl-stat { font-size: 0.65rem; color: #999; line-height: 1.2; }
+        .hl-net { font-size: 0.9rem; font-weight: 800; color: #fff; margin-top: 4px; }
 
         /* Veri Yönetimi */
         .data-tools { display: flex; gap: 10px; margin-bottom: 20px; }
@@ -190,9 +226,11 @@
     </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d6efd">
-
 </head>
 <body>
+
+    <!-- TOAST BİLDİRİMİ -->
+    <div id="toast-container"></div>
 
     <!-- CROPPER MODAL -->
     <div id="cropper-modal" class="cropper-modal-overlay">
@@ -202,6 +240,30 @@
         <div class="cropper-controls">
             <button class="crop-btn btn-cancel" onclick="cancelCrop()">İptal</button>
             <button class="crop-btn btn-confirm" onclick="performCrop()">Kırp & Kaydet</button>
+        </div>
+    </div>
+
+    <!-- SORU GÖRÜNTÜLEYİCİ (GEZGİN MODU) -->
+    <div id="question-viewer">
+        <div class="qv-header">
+            <div style="font-weight:bold;" id="qv-title">Soru Detayı</div>
+            <button class="qv-close" onclick="closeQuestionViewer()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="qv-body">
+            <!-- Sağ/Sol Oklar -->
+            <button class="qv-nav-btn qv-prev" onclick="navigateQuestion(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="qv-nav-btn qv-next" onclick="navigateQuestion(1)"><i class="fas fa-chevron-right"></i></button>
+
+            <div class="qv-content-box">
+                <!-- SİLME BUTONU -->
+                <div style="text-align:right; margin-bottom:10px;">
+                    <button onclick="deleteCurrentQ()" style="background:rgba(239,68,68,0.2); color:var(--danger); border:1px solid var(--danger); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;"><i class="fas fa-trash"></i> SİL</button>
+                </div>
+
+                <div id="qv-content">
+                    <!-- İçerik JS ile dolacak -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -335,11 +397,12 @@
                 <button class="btn-primary" onclick="addToPool()">HAVUZA KAYDET</button>
             </div>
 
-            <!-- LİSTELEME & ÇÖZME -->
+            <!-- LİSTELEME (YENİ) -->
             <div id="pool-list-view" class="hidden">
                 <div style="display:flex; gap:5px; margin-bottom:15px;">
                     <select id="list-l-filter" onchange="renderPoolList()"><option value="all">Tüm Dersler</option></select>
                     <select id="list-t-filter" onchange="renderPoolList()"><option value="all">Tüm Konular</option></select>
+                    <button onclick="openRandomQ()" style="padding:0 15px; background:var(--warning); color:black; border:none; border-radius:8px; font-weight:bold;">Rastgele</button>
                 </div>
                 <div id="pool-list-container"></div>
             </div>
@@ -369,7 +432,7 @@
 
     </div>
 
-    <!-- ALT MENÜ -->
+    <!-- ALT MENÜ (4 Buton) -->
     <div class="bottom-nav">
         <button class="nav-btn active" onclick="nav('dashboard', this)"><i class="fas fa-chart-pie"></i><span>Özet</span></button>
         <button class="nav-btn" onclick="nav('add', this)"><i class="fas fa-plus-circle"></i><span>Ekle</span></button>
@@ -379,7 +442,24 @@
     </div>
 
 <script>
-    const LESSONS = [{k:'tr', l:'Türkçe', q:30}, {k:'mat', l:'Matematik', q:30}, {k:'tar', l:'Tarih', q:27}, {k:'cog', l:'Coğrafya', q:18}, {k:'vat', l:'Vatandaşlık', q:15}];
+    // --- TOAST BİLDİRİMİ ---
+    function showToast(msg) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = msg;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    const LESSONS = [
+        {k:'tr', l:'Türkçe', q:30, color:'hl-tr'}, 
+        {k:'mat', l:'Matematik', q:30, color:'hl-mat'}, 
+        {k:'tar', l:'Tarih', q:27, color:'hl-tar'}, 
+        {k:'cog', l:'Coğrafya', q:18, color:'hl-cog'}, 
+        {k:'vat', l:'Vatandaşlık', q:15, color:'hl-vat'}
+    ];
     const TOPICS = {
         'Türkçe': ['Ses Bilgisi', 'Yazım Kuralları', 'Noktalama İşaretleri', 'Sözcükte Yapı', 'Cümlenin Ögeleri', 'Anlatım Bozukluğu', 'Sözel Mantık', '--- SÖZCÜK TÜRLERİ ---', '1-İsimler', '2-Tamlamalar', '3-Zamirler ( Adıl )', '4-Sıfat (Ön ad)', '5-Zarf ( Belirteç )', '6-Edat / Bağlaç', 'SÖZCÜKTE ANLAM', '--- CÜMLEDE ANLAM ---', '1-Cümle Tamamlama', '2-Cümle Oluşturma', '3-Cümle Yorumu', '4-Cümlelerin Anlam Özelliği', '5-Cümlede Kesin Yargı', '6- Cümle Birleştirme', '--- PARAGRAFTA ANLAM ---', '1-Anlatım biçimleri', '2-Konu başlık bulma', '3-Ana düşünce', '4-Yardımcı düşünce', '5-Akışı bozan cümle', '6-Tamamlama', '7-Cümle ekleme', '8-İkiye bölme', '9-Yer değiştirme', '10-Paragraf oluşturma', '11-Çoklu sorular'],
         'Matematik': ['Temel Kavramlar', 'Sayı Basamakları', 'Bölme / Bölünebilme', 'Rasyonel Sayılar', 'Eşitsizlikler', 'Mutlak Değer', 'Üslü Sayılar', 'Köklü Sayılar', 'Çarpanlara Ayırma', 'Oran-Orantı', 'Kümeler', 'İşlem ve Modüler aritmetik', 'Fonksiyon', 'Per/Kom/Olasılık', 'Sayısal Mantık', '--- PROBLEMLER ---', 'Sayı', 'Kesir', 'Yaş', 'Hareket', 'İşçi havuz', 'Kar-Zarar', 'Karışım', 'Grafik', '--- GEOMETRİ ---', 'Üçgenler', 'Çokgenler / Dörtgenler', 'Çember ve Daire', 'Analitik Geometri', 'Katı Cisimler'],
@@ -388,11 +468,13 @@
         'Vatandaşlık': ['Temel Hukuk Kavramları', 'Anayasa Tarihi', '1982 Anayasası Genel Hükümler', 'Temel Hak ve Hürriyetler', 'Yasama', 'Yürütme', 'Yargı', 'İdare Hukuku', 'İnsan Hakları']
     };
 
-    let db = JSON.parse(localStorage.getItem('kpss_pro_v30')) || {exams:[], topics:{}, pool:[], config:{target:85, examDate:''}};
+    let db = JSON.parse(localStorage.getItem('kpss_pro_v32')) || {exams:[], topics:{}, pool:[], config:{target:85, examDate:''}};
     let chartInst = {};
     let imgB64PoolQ = '', imgB64PoolA = '';
     let cropper = null;
     let currentCropTarget = '';
+    let currentFilteredPool = [];
+    let currentViewerIndex = 0;
 
     window.onload = () => { 
         document.getElementById('inp-date').valueAsDate = new Date(); 
@@ -431,7 +513,7 @@
         if(page==='pool') poolTab('list');
     };
 
-    // --- HAVUZ ---
+    // --- HAVUZ VE CROPPER ---
     window.poolTab = (m) => { 
         document.querySelectorAll('#page-pool .hidden').forEach(e=>e.classList.add('hidden')); 
         document.getElementById(`pool-${m}-view`).classList.remove('hidden'); 
@@ -499,8 +581,10 @@
             aTxt: aTxt, aImg: imgB64PoolA,
             correct: correctOpt
         });
-        save(); alert('Eklendi!');
+        save(); 
+        showToast("✅ Soru Havuza Eklendi!");
         
+        // Reset
         imgB64PoolQ=''; imgB64PoolA='';
         document.getElementById('text-q').value=''; document.getElementById('text-a').value='';
         document.getElementById('prev-q').style.display='none'; document.getElementById('prev-a').style.display='none';
@@ -508,75 +592,115 @@
         document.querySelectorAll('input[name="correct"]').forEach(r => r.checked = false);
     };
 
+    // --- SORU GÖRÜNTÜLEME VE NAVİGASYON ---
     window.renderPoolList = () => {
         const lFilter = document.getElementById('list-l-filter').value;
-        const list = db.pool.filter(q => lFilter === 'all' || q.l === lFilter);
+        const tFilter = document.getElementById('list-t-filter').value;
+        
+        currentFilteredPool = db.pool.filter(q => 
+            (lFilter === 'all' || q.l === lFilter) &&
+            (tFilter === 'all' || q.t === tFilter)
+        ).reverse();
+
         const container = document.getElementById('pool-list-container');
         
-        if(list.length === 0) { container.innerHTML = '<div style="text-align:center; color:#666; margin-top:20px;">Soru yok.</div>'; return; }
+        if(currentFilteredPool.length === 0) { container.innerHTML = '<div style="text-align:center; color:#666; margin-top:20px;">Soru yok.</div>'; return; }
 
-        container.innerHTML = list.slice().reverse().map(q => `
-            <div class="q-card" id="q-card-${q.id}">
-                <div class="q-header">
-                    <span class="q-tag">${q.l} ${q.t ? '> '+q.t : ''}</span>
-                    <button class="delete-btn" onclick="deleteQById(${q.id})" style="background:rgba(239,68,68,0.2); color:var(--danger); border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">SİL</button>
+        container.innerHTML = currentFilteredPool.map((q, idx) => `
+            <div class="q-list-item" onclick="openQuestionViewer(${idx})">
+                <div class="q-list-info">
+                    <b>${q.l}</b> ${q.t ? '> '+q.t : ''}
                 </div>
-                <div class="q-body">
-                    ${q.qImg ? `<div class="q-img-box"><img src="${q.qImg}" onclick="viewImg(this)"></div>` : ''}
-                    ${q.qTxt ? `<div class="q-text">${q.qTxt}</div>` : ''}
-                    
-                    ${q.correct !== 'NONE' ? `
-                    <div class="opt-group" id="opts-${q.id}">
-                        <button class="opt-btn" onclick="checkAnswer(${q.id}, 'A', '${q.correct}')">A</button>
-                        <button class="opt-btn" onclick="checkAnswer(${q.id}, 'B', '${q.correct}')">B</button>
-                        <button class="opt-btn" onclick="checkAnswer(${q.id}, 'C', '${q.correct}')">C</button>
-                        <button class="opt-btn" onclick="checkAnswer(${q.id}, 'D', '${q.correct}')">D</button>
-                        <button class="opt-btn" onclick="checkAnswer(${q.id}, 'E', '${q.correct}')">E</button>
-                    </div>` : ''}
-
-                    <button class="q-reveal-btn" id="reveal-${q.id}" onclick="document.getElementById('ans-${q.id}').classList.add('visible'); this.style.display='none';">
-                        ${q.correct !== 'NONE' ? 'Cevabı Göster' : 'Cevabı Göster (Şık Yok)'}
-                    </button>
-                    
-                    <div class="q-answer-section" id="ans-${q.id}">
-                        <div class="cahil-msg">"Cahil al sana cevap!"</div>
-                        ${q.correct !== 'NONE' ? `<div class="q-answer-title">DOĞRU: ${q.correct}</div>` : ''}
-                        ${q.aImg ? `<div class="q-img-box"><img src="${q.aImg}" onclick="viewImg(this)"></div>` : ''}
-                        ${q.aTxt ? `<div class="q-text">${q.aTxt}</div>` : ''}
-                    </div>
-                </div>
+                <i class="fas fa-chevron-right q-list-arrow"></i>
             </div>
         `).join('');
     };
+
+    window.openQuestionViewer = (index) => {
+        currentViewerIndex = index;
+        document.getElementById('question-viewer').style.display = 'flex';
+        renderQuestionInViewer();
+    };
     
-    window.checkAnswer = (id, selected, correct) => {
-        const parent = document.getElementById(`opts-${id}`);
-        const btns = parent.querySelectorAll('.opt-btn');
-        btns.forEach(btn => {
-            btn.disabled = true;
-            if (btn.innerText === correct) btn.classList.add('correct');
-            if (btn.innerText === selected && selected !== correct) btn.classList.add('wrong');
-        });
-        document.getElementById(`reveal-${id}`).click(); 
+    window.openRandomQ = () => {
+        if(currentFilteredPool.length === 0) return alert("Listede soru yok!");
+        const randIdx = Math.floor(Math.random() * currentFilteredPool.length);
+        openQuestionViewer(randIdx);
     };
 
-    window.viewImg = (img) => { let w = window.open(""); w.document.write(`<img src="${img.src}" style="width:100%">`); };
+    window.closeQuestionViewer = () => {
+        document.getElementById('question-viewer').style.display = 'none';
+    };
 
-    // GÜVENLİ SİLME
-    window.deleteQById = (id) => {
+    window.navigateQuestion = (direction) => {
+        const newIndex = currentViewerIndex + direction;
+        if(newIndex >= 0 && newIndex < currentFilteredPool.length) {
+            currentViewerIndex = newIndex;
+            renderQuestionInViewer();
+        }
+    };
+
+    function renderQuestionInViewer() {
+        const q = currentFilteredPool[currentViewerIndex];
+        const container = document.getElementById('qv-content');
+        
+        container.innerHTML = `
+            <div style="text-align:center;">
+                <div style="color:var(--secondary); font-weight:bold; margin-bottom:10px;">${q.l} ${q.t ? '> '+q.t : ''}</div>
+                
+                ${q.qImg ? `<img src="${q.qImg}" class="qv-img" onclick="viewImg(this)">` : ''}
+                ${q.qTxt ? `<div class="qv-text">${q.qTxt}</div>` : ''}
+                
+                ${q.correct !== 'NONE' ? `
+                <div class="opt-group" id="qv-opts">
+                    <button class="opt-btn" onclick="checkViewerAnswer(this, 'A', '${q.correct}')">A</button>
+                    <button class="opt-btn" onclick="checkViewerAnswer(this, 'B', '${q.correct}')">B</button>
+                    <button class="opt-btn" onclick="checkViewerAnswer(this, 'C', '${q.correct}')">C</button>
+                    <button class="opt-btn" onclick="checkViewerAnswer(this, 'D', '${q.correct}')">D</button>
+                    <button class="opt-btn" onclick="checkViewerAnswer(this, 'E', '${q.correct}')">E</button>
+                </div>` : ''}
+                
+                <button class="q-reveal-btn" onclick="document.getElementById('qv-ans').classList.add('show'); this.style.display='none';">Cevabı Göster</button>
+                
+                <div id="qv-ans" class="qv-answer-area">
+                    <div class="cahil-msg">"Cahil al sana cevap!"</div>
+                    ${q.correct !== 'NONE' ? `<div class="q-answer-title">DOĞRU: ${q.correct}</div>` : ''}
+                    ${q.aImg ? `<img src="${q.aImg}" class="qv-img" onclick="viewImg(this)">` : ''}
+                    ${q.aTxt ? `<div class="qv-text">${q.aTxt}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    window.checkViewerAnswer = (btn, selected, correct) => {
+        const parent = document.getElementById('qv-opts');
+        const btns = parent.querySelectorAll('.opt-btn');
+        btns.forEach(b => {
+            b.disabled = true;
+            if (b.innerText === correct) b.classList.add('correct');
+            if (b.innerText === selected && selected !== correct) b.classList.add('wrong');
+        });
+    };
+    
+    window.deleteCurrentQ = () => {
         if(confirm('Bu soruyu silmek istediğinize emin misiniz?')) {
-            const idx = db.pool.findIndex(q => q.id === id);
+            const q = currentFilteredPool[currentViewerIndex];
+            const idx = db.pool.findIndex(item => item.id === q.id);
             if(idx > -1) {
                 db.pool.splice(idx, 1);
                 save();
+                showToast("🗑️ Soru Silindi");
+                closeQuestionViewer();
                 renderPoolList();
             }
         }
     };
 
-    // --- DİĞER ---
-    window.save = () => localStorage.setItem('kpss_pro_v30', JSON.stringify(db));
-    window.clearData = () => { if(confirm('Her şeyi sil?')) { localStorage.removeItem('kpss_pro_v30'); location.reload(); } };
+    window.viewImg = (img) => { let w = window.open(""); w.document.write(`<img src="${img.src}" style="width:100%">`); };
+
+    // --- DİĞER İŞLEMLER ---
+    window.save = () => localStorage.setItem('kpss_pro_v32', JSON.stringify(db));
+    window.clearData = () => { if(confirm('Her şeyi sil?')) { localStorage.removeItem('kpss_pro_v32'); location.reload(); } };
     window.exportData = () => { let a=document.createElement('a'); a.href='data:json;charset=utf-8,'+encodeURIComponent(JSON.stringify(db)); a.download='kpss_yedek.json'; a.click(); };
     window.triggerImport = () => document.getElementById('import-file').click();
     window.importData = (i) => { let r=new FileReader(); r.onload=e=>{db=JSON.parse(e.target.result); save(); location.reload();}; r.readAsText(i.files[0]); };
@@ -585,22 +709,68 @@
     window.toggleTop = (id,s,i,el) => { 
         if(db.topics[id]) delete db.topics[id]; else db.topics[id]=true; save(); 
         el.querySelector('input').checked=db.topics[id]; 
-        // COĞRAFYA YÜZDE HESAPLAMA FIX
         let l=TOPICS[s].filter(t=>!t.trim().startsWith('-') && !t.trim().startsWith('—')).length;
         let d=TOPICS[s].filter(t=>(!t.trim().startsWith('-') && !t.trim().startsWith('—')) && db.topics[`${s}-${t}`]).length; 
         document.getElementById(`pct-${i}`).innerText=`%${Math.round((d/l)*100)}`; 
     };
 
     window.calcNet = (k,max,t) => { let d=Number(document.getElementById(`d-${k}`).value), y=Number(document.getElementById(`y-${k}`).value); if(d+y>max){alert('Hata!');t=='d'?document.getElementById(`d-${k}`).value='':document.getElementById(`y-${k}`).value='';}else{document.getElementById(`n-${k}`).innerText=(d-y*0.25).toFixed(2);}};
-    window.saveExam = () => { let ex={id:Date.now(), name:document.getElementById('inp-name').value||'Deneme', date:document.getElementById('inp-date').value, res:{}, tot:0}; for(let L of LESSONS){ let d=Number(document.getElementById(`d-${L.k}`).value), y=Number(document.getElementById(`y-${L.k}`).value); if(d+y>L.q) return alert('Hata'); let n=d-y*0.25; ex.res[L.k]={d,y,n}; ex.tot+=n; } db.exams.push(ex); save(); alert('Kaydedildi!'); nav('history', document.getElementById('btn-hist')); };
+    
+    // DİNAMİK KAYIT VE TEMİZLEME
+    window.saveExam = () => { 
+        let ex={id:Date.now(), name:document.getElementById('inp-name').value||'Deneme', date:document.getElementById('inp-date').value, res:{}, tot:0}; 
+        for(let L of LESSONS){ 
+            let d=Number(document.getElementById(`d-${L.k}`).value), y=Number(document.getElementById(`y-${L.k}`).value); 
+            if(d+y>L.q) return alert('Hata'); 
+            let n=d-y*0.25; ex.res[L.k]={d,y,n}; ex.tot+=n; 
+        } 
+        db.exams.push(ex); 
+        save(); 
+        showToast("✅ Deneme Başarıyla Eklendi!");
+        
+        // FORM TEMİZLEME
+        document.getElementById('inp-name').value = '';
+        LESSONS.forEach(L => {
+            document.getElementById(`d-${L.k}`).value = '';
+            document.getElementById(`y-${L.k}`).value = '';
+            document.getElementById(`n-${L.k}`).innerText = '0.0';
+        });
+
+        updateStats();
+        renderHistory();
+        renderHistoryChart();
+        nav('history', document.getElementById('btn-hist'));
+    };
+    
     window.delExam=(id)=>{if(confirm('Sil?')){db.exams=db.exams.filter(e=>e.id!=id); save(); renderHistory(); renderHistoryChart();}};
-    window.renderHistory = () => { document.getElementById('history-list').innerHTML = db.exams.slice().reverse().map(e => `<div class="history-card"><div class="h-header"><span class="h-date">${e.date}</span><button class="del-btn" onclick="delExam(${e.id})"><i class="fas fa-trash"></i></button></div><div style="display:flex;justify-content:space-between;margin-bottom:10px;"><div class="h-title">${e.name}</div><div class="h-total">Top: ${e.tot.toFixed(2)}</div></div><div class="h-lessons-scroll">${LESSONS.map(l=>`<div class="h-lesson-box"><div class="hl-name">${l.l.substr(0,3)}</div><div class="hl-stat" style="color:#4ade80">D:${e.res[l.k].d}</div><div class="hl-stat" style="color:#f87171">Y:${e.res[l.k].y}</div><div class="hl-net">${e.res[l.k].n}</div></div>`).join('')}</div></div>`).join(''); };
+    
+    window.renderHistory = () => { 
+        document.getElementById('history-list').innerHTML = db.exams.slice().reverse().map(e => `
+        <div class="history-card">
+            <div class="h-header">
+                <span class="h-date">${e.date}</span>
+                <button class="del-btn" onclick="delExam(${e.id})"><i class="fas fa-trash"></i></button>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <div class="h-title">${e.name}</div>
+                <div class="h-total">Top: ${e.tot.toFixed(2)}</div>
+            </div>
+            <div class="h-lessons-grid">
+                ${LESSONS.map(l=>`
+                <div class="h-lesson-box ${l.color}">
+                    <div class="hl-name">${l.l.substr(0,3)}</div>
+                    <div class="hl-stat">D:${e.res[l.k].d}</div>
+                    <div class="hl-stat">Y:${e.res[l.k].y}</div>
+                    <div class="hl-net">${e.res[l.k].n}</div>
+                </div>`).join('')}
+            </div>
+        </div>`).join(''); 
+    };
 
     window.updateStats = () => {
         document.getElementById('d-total').innerText=db.exams.length; document.getElementById('d-pool').innerText=db.pool.length;
         document.getElementById('d-avg').innerText=db.exams.length?(db.exams.reduce((a,b)=>a+b.tot,0)/db.exams.length).toFixed(2):0;
         let t=0,d=0; 
-        // COĞRAFYA GENEL YÜZDE HESAPLAMA FIX
         Object.keys(TOPICS).forEach(k=>{
             let l=TOPICS[k].filter(x=>!x.trim().startsWith('-') && !x.trim().startsWith('—')); 
             t+=l.length; 
