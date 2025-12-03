@@ -1,9 +1,9 @@
 const CACHE_NAME = "kpss-cache-v1";
 const ASSETS = [
   "/",
-  "/index.html",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png"
+  "index.html",
+  "icons/icon-192.png",
+  "icons/icon-512.png"
   // Buraya kendi CSS/JS dosyalarını ekle: ör. "/css/styles.css", "/js/app.js"
 ];
 
@@ -21,4 +21,5 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   event.respondWith(caches.match(event.request).then(r => r || fetch(event.request)));
+
 });
